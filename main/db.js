@@ -117,10 +117,10 @@ const login = (request, response) => {
             response.status(400).json(error);
           throw error;
         } else if (results.rows.length == 0){
-          response.status(404),json("wrong user or password, try again or sign in a new account")
+          response.status(404).json("wrong user or password, try again or sign in a new account")
         }
         
-        const token = auth.generateAccessToken({ email: request.body.email });
+        const token = auth.generateAccessToken({ username: request.body.username });
         response.status(200).json(`${token}`);
       });
 }
@@ -137,8 +137,7 @@ const signIn = (request, response) => {
         throw error;
       }
       const token = auth.generateAccessToken({ username: request.body.username });
-      response.json(token);
-      response.status(201).send(`User added with ID: ${results.insertId}`);
+      response.status(201).json(token);
     }
   );
 };
