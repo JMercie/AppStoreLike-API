@@ -3,6 +3,7 @@ const app = express()
 const port = 3000
 const bodyParser = require('body-parser')
 const db = require('./db')
+const auth = require('./auth')
 
 app.use(bodyParser.json())
 app.use(
@@ -11,21 +12,18 @@ app.use(
   })
 )
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
 
-app.get('/apps/:id', db.getAppsByUser)
-app.get('/users/', db.getUsers)
-app.get('/allapps/', db.getAllApps) 
+app.get('/apps/:id', auth.authenticateToken, db.getAppsByUser)
+app.get('/', db.login)
+app.get('/allapps/', db.getAllApps)
 
-app.post('/users', db.createUser)
-app.post('/apps', db.createApp)
-app.post('/buy', db.buy)
+app.post('/signIn', db.signIn)
+app.post('/apps', auth.authenticateToken, db.createApp)
+app.post('/buy', auth.authenticateToken, db.buy)
 
-app.put('/apps/:id', db.updateApp)
+app.put('/apps/:id', auth.authenticateToken, db.updateApp)
 
-app.delete('/apps/:id', db.deleteApp)
+app.delete('/apps/:id', auth.authenticateToken, db.deleteApp)
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)

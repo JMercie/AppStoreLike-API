@@ -5,6 +5,7 @@ const host = process.env.HOST;
 const database = process.env.DB_NAME;
 const password = process.env.DB_PASS;
 const port = process.env.PORT;
+const auth = require('./auth')
 
 const { Pool } = require('pg');
 const { response } = require("express");
@@ -106,18 +107,27 @@ const createApp = (request, response) => {
     });
   }; 
 
-const getUsers = (request, response) => {
-    pool.query("SELECT * FROM users", (error, results) => {
+const login = (request, response) => {
+
+    const {email, password} = request.body;
+
+    const query = "SELECT * FROM users WHERE email = $1 AND password = $2"
+    pool.query(query, [email, password], (error, results) => {
         if (error) {
             response.status(400).json(error);
           throw error;
+        } else if (results.rows.length == 0){
+          response.status(404),json("wrong user or password, try again or sign in a new account")
         }
-        response.status(200).json(results.rows);
+        
+        const token = auth.generateAccessToken({ email: request.body.email });
+        response.status(200).json(`${token}`);
       });
 }
 
-const createUser = (request, response) => {
+const signIn = (request, response) => {
   const { name, email, password, admin } = request.body;
+
 
   pool.query(
     "INSERT INTO users (name, email, password, admin) VALUES ($1, $2, $3, $4)",
@@ -126,6 +136,8 @@ const createUser = (request, response) => {
       if (error) {
         throw error;
       }
+      const token = auth.generateAccessToken({ username: request.body.username });
+      response.json(token);
       response.status(201).send(`User added with ID: ${results.insertId}`);
     }
   );
@@ -153,11 +165,11 @@ const buy = (req, res) => {
 }
 
 module.exports = {
-  getUsers,
+  login,
   getAppsByUser,
   getAllApps,
   createApp,
-  createUser,
+  signIn,
   updateApp,
   deleteApp,
   buy,
