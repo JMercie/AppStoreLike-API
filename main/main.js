@@ -2,28 +2,7 @@ const express = require('express')
 const app = express()
 const port = 3000
 const bodyParser = require('body-parser')
-
-require("dotenv").config();
-
-const user = process.env.DB_USER;
-const host = process.env.HOST;
-const database = process.env.DB_NAME;
-const password = process.env.DB_PASS;
-const port1 = process.env.PORT;
-
-const initOptions = {
-
-    // pg-promise initialization options...
-
-    connect(client, useCount) {
-        const cp = client.connectionParameters;
-        console.log('Connected to database:', cp.database);
-    }
-
-};
-
-const pgp = require("pg-promise")(initOptions);
-const db = pgp(`postgres://${user}:${password}@${host}:${port1}/${database}`);
+const db = require('./db')
 
 app.use(bodyParser.json())
 app.use(
@@ -36,19 +15,17 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
-app.get('/users', function (req, res){
-    db.query('select * from clientes')
-    .then(function (data) {
-      res.json(data);
-    })
-    .catch(function (error) {
-      res.status(400).send(error);
-    });
-})
-// app.get('/app/:id', db.getAppsById)
-// app.post('/users', db.createUser)
-// app.put('/users/:id', db.updateUser)
-// app.delete('/users/:id', db.deleteUser)
+app.get('/apps/:id', db.getAppsByUser)
+app.get('/users/', db.getUsers)
+app.get('/allapps/', db.getAllApps) 
+
+app.post('/users', db.createUser)
+app.post('/apps', db.createApp)
+app.post('/buy', db.buy)
+
+app.put('/apps/:id', db.updateApp)
+
+app.delete('/apps/:id', db.deleteApp)
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
