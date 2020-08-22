@@ -1,0 +1,14 @@
+{
+    "sqltools.connections": [
+        {
+            "database": "appList",
+            "driver": "PostgreSQL",
+            "name": "appList",
+            "password": "solvay1927",
+            "port": 5432,
+            "previewLimit": 50,
+            "server": "localhost",
+            "username": "postgres"
+        }
+    ]
+}
