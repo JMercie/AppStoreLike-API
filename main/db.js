@@ -119,10 +119,20 @@ const login = (request, response) => {
         } else if (results.rows.length == 0){
           response.status(404).json("wrong user or password, try again or sign in a new account")
         }
-        
         const token = auth.generateAccessToken({ username: request.body.username });
-        response.status(200).json(`${token}`);
+        response.status(200).json(token);
       });
+}
+
+const getUserByName = (req, res) => {
+  const email = req.params.email;
+  const query = "SELECT * FROM users WHERE email $1";
+  pool.query(query, [email], (err, res) =>{
+    if (error) {
+      response.status(400).json(error)
+    }
+    response.status(200).json(res.rows)
+  })
 }
 
 const signIn = (request, response) => {
@@ -166,6 +176,7 @@ const buy = (req, res) => {
 module.exports = {
   login,
   getAppsByUser,
+  getUserByName,
   getAllApps,
   createApp,
   signIn,
