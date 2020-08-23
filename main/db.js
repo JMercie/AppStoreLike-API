@@ -126,13 +126,17 @@ const login = (request, response) => {
 
 const getUserByName = (req, res) => {
   const email = req.params.email;
-  const query = "SELECT * FROM users WHERE email $1";
-  pool.query(query, [email], (err, res) =>{
+  const query = "SELECT * FROM users WHERE email = $1";
+  pool.query(query, [email] ,(error, results) => {
     if (error) {
-      response.status(400).json(error)
+      res.status(400).json(error);
+      throw error;
     }
-    response.status(200).json(res.rows)
-  })
+    if (results.rows.length == 0) {
+      res.status(404).json("not user found!")
+    }
+    res.status(200).json(results.rows);
+  });
 }
 
 const signIn = (request, response) => {
