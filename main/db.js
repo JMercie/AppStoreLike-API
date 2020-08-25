@@ -128,20 +128,36 @@ const login = (request, response) => {
 
 const signIn = (request, response) => {
   const { name, email, password, admin } = request.body;
-
+  const query = "SELECT * FROM users WHERE email = $1"
 
   pool.query(
-    "INSERT INTO users (name, email, password, admin) VALUES ($1, $2, $3, $4)",
-    [name, email, password, admin],
-    (error, results) => {
-      if (error) {
-        throw error;
+    query, [email],
+     (err, results) =>{
+      if (err) {
+        throw err;
       }
-      const token = auth.generateAccessToken({ username: request.body.username });
-      response.cookie('jwt', token, {httpOnly: true, expiresIn: '1800s'})
-      response.status(201).json(results.rows);
+      const alreadyInDB = results.rows;
     }
   );
+
+  if (alredyInDB){
+
+    response.status(400).json("user already exists");
+  } else {
+
+    pool.query(
+      "INSERT INTO users (name, email, password, admin) VALUES ($1, $2, $3, $4)",
+      [name, email, password, admin],
+      (error, results) => {
+        if (error) {
+          throw error;
+        }
+        const token = auth.generateAccessToken({ username: request.body.username });
+        response.cookie('jwt', token, {httpOnly: true, expiresIn: '1800s'})
+        response.status(201).json(results.rows);
+      }
+    );
+  }
 };
 
 
