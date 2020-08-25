@@ -4,6 +4,8 @@ const port = 3000
 const bodyParser = require('body-parser')
 const db = require('./db')
 const auth = require('./auth')
+const cookieParser = require('cookie-parser');
+
 
 app.use(bodyParser.json())
 app.use(
@@ -11,6 +13,7 @@ app.use(
     extended: true,
   })
 )
+app.use(cookieParser());
 
 
 app.get('/apps/:id', auth.authenticateToken, db.getAppsByUser)
