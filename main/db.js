@@ -108,7 +108,7 @@ const createApp = (request, response) => {
   }; 
 
 const login = (request, response) => {
-
+  const maxAge = 3 * 24 * 60 * 60;
     const {email, password} = request.body;
 
     const query = "SELECT * FROM users WHERE email = $1 AND password = $2"
@@ -120,29 +120,30 @@ const login = (request, response) => {
           response.status(404).json("wrong user or password, try again or sign in a new account")
         }
         const token = auth.generateAccessToken({ username: request.body.username });
-        response.cookie('jwt', token, {httpOnly: true, expiresIn: '1800s'})
+        response.cookie('jwt', token, {httpOnly: true, maxAge: maxAge * 1000})
         response.status(200).json(results.rows);
       });
 }
 
 
 const signIn = (request, response) => {
+  const maxAge = 3 * 24 * 60 * 60;
   const { name, email, password, admin } = request.body;
   const query = "SELECT * FROM users WHERE email = $1"
-
+  let alreadyInDB = [];
   pool.query(
     query, [email],
      (err, results) =>{
-      if (err) {
-        throw err;
-      }
-      const alreadyInDB = results.rows;
+       if (err) {
+         throw err
+       }
+       alreadyInDB = results.rows;
     }
   );
 
-  if (alredyInDB){
+  if (alreadyInDB == []){
 
-    response.status(400).json("user already exists");
+    response.status(400).json('already exits the user')
   } else {
 
     pool.query(
@@ -153,7 +154,7 @@ const signIn = (request, response) => {
           throw error;
         }
         const token = auth.generateAccessToken({ username: request.body.username });
-        response.cookie('jwt', token, {httpOnly: true, expiresIn: '1800s'})
+        response.cookie('jwt', token, {httpOnly: true, maxAge: maxAge * 1000})
         response.status(201).json(results.rows);
       }
     );

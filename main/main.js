@@ -2,30 +2,27 @@ const express = require('express')
 const app = express()
 const port = 3000
 const bodyParser = require('body-parser')
-const db = require('./db')
-const auth = require('./auth')
 const cookieParser = require('cookie-parser');
+const setRoutes = require('./routes/setRoutes')
 
-
+// middleware
 app.use(bodyParser.json())
 app.use(
   bodyParser.urlencoded({
     extended: true,
   })
 )
+
+app.use(express.static('public'));
 app.use(cookieParser());
 
+app.set('view engine', 'ejs');
 
-app.get('/apps/:id', auth.authenticateToken, db.getAppsByUser)
-app.get('/', db.login)
-app.get('/allapps/', db.getAllApps)
-app.post('/signIn', db.signIn)
-app.post('/apps', auth.authenticateToken, db.createApp)
-app.post('/buy', auth.authenticateToken, db.buy)
+//view
+app.get('/', (req, res) => res.render('home'));
+app.get('/smoothies', (req, res) => res.render('smoothies'));
+app.use(setRoutes);
 
-app.put('/apps/:id', auth.authenticateToken, db.updateApp)
-
-app.delete('/apps/:id', auth.authenticateToken, db.deleteApp)
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
