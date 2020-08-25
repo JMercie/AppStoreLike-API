@@ -120,24 +120,11 @@ const login = (request, response) => {
           response.status(404).json("wrong user or password, try again or sign in a new account")
         }
         const token = auth.generateAccessToken({ username: request.body.username });
-        response.status(200).json(token);
+        response.cookie('jwt', token, {httpOnly: true, expiresIn: '1800s'})
+        response.status(200).json(results.rows);
       });
 }
 
-const getUserByName = (req, res) => {
-  const email = req.params.email;
-  const query = "SELECT * FROM users WHERE email = $1";
-  pool.query(query, [email] ,(error, results) => {
-    if (error) {
-      res.status(400).json(error);
-      throw error;
-    }
-    if (results.rows.length == 0) {
-      res.status(404).json("not user found!")
-    }
-    res.status(200).json(results.rows);
-  });
-}
 
 const signIn = (request, response) => {
   const { name, email, password, admin } = request.body;
@@ -151,7 +138,8 @@ const signIn = (request, response) => {
         throw error;
       }
       const token = auth.generateAccessToken({ username: request.body.username });
-      response.status(201).json(token);
+      response.cookie('jwt', token, {httpOnly: true, expiresIn: '1800s'})
+      response.status(201).json(results.rows);
     }
   );
 };
@@ -180,7 +168,6 @@ const buy = (req, res) => {
 module.exports = {
   login,
   getAppsByUser,
-  getUserByName,
   getAllApps,
   createApp,
   signIn,

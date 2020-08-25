@@ -16,7 +16,6 @@ app.use(
 app.get('/apps/:id', auth.authenticateToken, db.getAppsByUser)
 app.get('/', db.login)
 app.get('/allapps/', db.getAllApps)
-app.get('/user/:email', auth.authenticateToken, db.getUserByName)
 app.post('/signIn', db.signIn)
 app.post('/apps', auth.authenticateToken, db.createApp)
 app.post('/buy', auth.authenticateToken, db.buy)
