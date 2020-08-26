@@ -10,8 +10,8 @@
   <label for="password">Password</label>
   <input type="password" name="password" required />
   <div class="password error"></div>
-  <label for="admin">Developer?</label>
-  <input type="checkbox" name="admin" />
+  <label for="admin">Developer</label>
+  <input type="checkbox" name="admin" value="true"/> 
   <button>Sign up</button>
 </form>
 
@@ -50,7 +50,7 @@
         passwordError.textContent = data.errors.password;
       }
       if (data) {
-        location.assign('/');
+        location.assign('/login');
       }
     }
     catch (err) {

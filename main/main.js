@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const port = 3000
+const port = 8080
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser');
 const setRoutes = require('./routes/setRoutes')
@@ -12,6 +12,10 @@ app.use(
     extended: true,
   })
 )
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  next();
+});
 
 app.use(express.static('public'));
 app.use(cookieParser());

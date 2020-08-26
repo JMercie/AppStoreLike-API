@@ -24,9 +24,8 @@ pool.on('error', (err, client) => {
 
 //routes
 const getAllApps = (request, response) => {
-    const {categorys} = request.body;
-
-    pool.query("SELECT * FROM apps WHERE apps.category = $1 ORDER BY apps.name", [categorys],(error, results) => {
+  const category = request.params.category;
+    pool.query("SELECT * FROM apps WHERE category = $1 ORDER BY name", [category], (error, results) => {
         if (error) {
             response.status(400).json(error);
           throw error;
@@ -155,7 +154,7 @@ const signIn = (request, response) => {
         }
         const token = auth.generateAccessToken({ username: request.body.username });
         response.cookie('jwt', token, {httpOnly: true, maxAge: maxAge * 1000})
-        response.status(201).json(results.rows);
+        response.status(201).json('user created sucessfully, redirected to login');
       }
     );
   }
