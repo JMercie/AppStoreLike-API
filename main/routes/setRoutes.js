@@ -1,6 +1,6 @@
 const { Router } = require('express');
-const db = require('/Users/joseph/Documents/appLuciana/main/db.js');
-const auth = require('/Users/joseph/Documents/appLuciana/main/auth.js');
+const db = require('/Users/joseph/Desktop/AppStoreLike-API/main/db.js');
+const auth = require('/Users/joseph/Desktop/AppStoreLike-API/main/auth.js');
 const bodyParser = require('body-parser')
 
 const router = Router();
