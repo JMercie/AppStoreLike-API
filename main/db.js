@@ -23,9 +23,24 @@ pool.on('error', (err, client) => {
   })
 
 //routes
-const getAllApps = (request, response) => {
+const getAllAppsByCategory = (request, response) => {
   const category = request.params.category;
     pool.query("SELECT * FROM apps WHERE category = $1 ORDER BY name", [category], (error, results) => {
+        if (error) {
+            response.status(400).json(error);
+          throw error;
+        }
+        if (results.rows.length == 0){
+            response.status(404).json('could not found apps for that category')
+        }else {
+            response.status(200).json(results.rows);    
+        }
+      });
+}
+
+const getAllApps = (request, response) => {
+  const category = request.params.category;
+    pool.query("SELECT * FROM apps WHERE ORDER BY name", [category], (error, results) => {
         if (error) {
             response.status(400).json(error);
           throw error;
@@ -184,6 +199,7 @@ module.exports = {
   login,
   getAppsByUser,
   getAllApps,
+  getAllAppsByCategory,
   createApp,
   signIn,
   updateApp,
