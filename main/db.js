@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-const user = process.env.DB_USER;
+const user = process.env.DB_USER; 
 const host = process.env.HOST;
 const database = process.env.DB_NAME;
 const password = process.env.DB_PASS;
@@ -10,11 +10,11 @@ const auth = require('./auth')
 const { Pool } = require('pg');
 const { response } = require("express");
 const pool = new Pool({
-  user: user,
-  host: host,
-  database: database,
+  user: user, 
+  host: host, 
+  database: database, 
   password: password,
-  port: port,
+  port: port, 
 })
 
 pool.on('error', (err, client) => {
@@ -40,7 +40,7 @@ const getAllAppsByCategory = (request, response) => {
 
 const getAllApps = (request, response) => {
   const category = request.params.category;
-    pool.query("SELECT * FROM apps WHERE ORDER BY name", [category], (error, results) => {
+    pool.query("SELECT * FROM apps ORDER BY name", (error, results) => {
         if (error) {
             response.status(400).json(error);
           throw error;
