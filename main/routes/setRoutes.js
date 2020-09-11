@@ -14,7 +14,7 @@ router.use(
 
 router.get('/apps/:id', auth.authenticateToken, db.getAppsByUser)
 router.post('/login', db.login)
-router.get('/allapps/:category', auth.authenticateToken, db.getAllApps)
+router.get('/allappsc/:category', auth.authenticateToken, db.getAllAppsByCategory)
 router.get('/allapps', auth.authenticateToken, db.getAllApps)
 router.post('/signIn', db.signIn)
 router.post('/apps', auth.authenticateToken, db.createApp)
